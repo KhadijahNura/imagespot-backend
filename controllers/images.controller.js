@@ -33,7 +33,7 @@ export const getImages = async (_, res) => {
 };
 
 // get all user uploads
-export const getUploads = async (_, res) => {
+export const getUploads = async (req, res) => {
   try {
     const uploads = await getImagesByUserID(req.user.id);
 
