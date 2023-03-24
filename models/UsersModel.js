@@ -1,14 +1,11 @@
-// import the database connection
-import db from '../config/database.js';
-
 // import db related functions
 import { createNewConnection, releaseConnection } from '../config/database.js';
 
 // create table
-export const createUsersTable = () => {
-  createNewConnection();
+export const createUsersTable = async () => {
+  const conn = await createNewConnection();
 
-  db.query(
+  conn.query(
     `
   CREATE TABLE IF NOT EXISTS users (
     id int NOT NULL AUTO_INCREMENT,
@@ -18,21 +15,21 @@ export const createUsersTable = () => {
     PRIMARY KEY (id)
   );`,
     () => {
-      releaseConnection();
+      releaseConnection(conn);
       console.log('Users table created successfully');
     }
   );
 };
 
 // get all users
-export const getUsers = () => {
+export const getUsers = async () => {
   const text = 'SELECT * FROM users';
 
-  createNewConnection();
+  const conn = await createNewConnection();
 
   return new Promise((resolve, reject) => {
-    db.query(text, values, (err, res, _) => {
-      releaseConnection();
+    conn.query(text, values, (err, res, _) => {
+      releaseConnection(conn);
 
       if (err) reject(err);
       else resolve(res);
@@ -41,15 +38,15 @@ export const getUsers = () => {
 };
 
 // get single user by ID
-export const getUserById = (id) => {
+export const getUserById = async (id) => {
   const text = 'SELECT * FROM users WHERE id = ?';
   const values = [id];
 
-  createNewConnection();
+  const conn = await createNewConnection();
 
   return new Promise((resolve, reject) => {
-    db.query(text, values, (err, res, _) => {
-      releaseConnection();
+    conn.query(text, values, (err, res, _) => {
+      releaseConnection(conn);
 
       if (err) reject(err);
       else resolve(res[0]);
@@ -58,15 +55,15 @@ export const getUserById = (id) => {
 };
 
 // get single user by Username
-export const getUserByUsername = (username) => {
+export const getUserByUsername = async (username) => {
   const text = 'SELECT * FROM users WHERE username = ?';
   const values = [username];
 
-  createNewConnection();
+  const conn = await createNewConnection();
 
   return new Promise((resolve, reject) => {
-    db.query(text, values, (err, res, _) => {
-      releaseConnection();
+    conn.query(text, values, (err, res, _) => {
+      releaseConnection(conn);
 
       if (err) reject(err);
       else resolve(res[0]);
@@ -79,10 +76,10 @@ export const insertUser = async (data) => {
   const text = 'INSERT INTO users(username, password) VALUES(?, ?)';
   const values = [data.username, data.password];
 
-  createNewConnection();
+  const conn = await createNewConnection();
 
   return new Promise((resolve, reject) => {
-    db.query(text, values, async (err, res, _) => {
+    conn.query(text, values, async (err, res, _) => {
       if (err) reject(err);
       else {
         try {
@@ -91,7 +88,7 @@ export const insertUser = async (data) => {
         } catch (err) {
           reject(err);
         } finally {
-          releaseConnection();
+          releaseConnection(conn);
         }
       }
     });

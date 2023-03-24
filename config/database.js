@@ -12,18 +12,20 @@ const db = mysql.createPool({
   host: process.env.DB_HOST,
 });
 
-export const createNewConnection = () => {
-  db.getConnection(function (err, connection) {
-    if (err) {
-      connection.release();
-      console.log(' Error getting mysql_pool connection: ' + err);
-      throw err;
-    }
+export const createNewConnection = async () => {
+  return new Promise((resolve, _) => {
+    db.getConnection(function (err, connection) {
+      if (err) {
+        connection.release();
+        console.log(' Error getting mysql_pool connection: ' + err);
+        throw err;
+      }
+
+      resolve(connection);
+    });
   });
 };
 
-export const releaseConnection = () => {
-  db.release();
-};
+export const releaseConnection = (connection) => connection.release();
 
 export default db;

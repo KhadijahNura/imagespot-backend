@@ -11,8 +11,8 @@ import { AuthRouter, ImagesRouter } from './routes/index.js';
 dotenv.config();
 
 // setting up database tables for the first time
-// createUsersTable();
-// createImagesTable();
+// await createUsersTable();
+// await createImagesTable();
 
 const app = express();
 

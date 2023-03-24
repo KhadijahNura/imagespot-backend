@@ -1,14 +1,11 @@
-// import the database connection
-import db from '../config/database.js';
-
 // importing db related functions
 import { createNewConnection, releaseConnection } from '../config/database.js';
 
 // create table
-export const createImagesTable = () => {
-  createNewConnection();
+export const createImagesTable = async () => {
+  const conn = await createNewConnection();
 
-  db.query(
+  conn.query(
     `
   CREATE TABLE IF NOT EXISTS images (
     id int NOT NULL AUTO_INCREMENT,
@@ -22,7 +19,7 @@ export const createImagesTable = () => {
   `,
     () => {
       console.log('Images table created successfully');
-      releaseConnection();
+      releaseConnection(conn);
     }
   );
 };
@@ -31,11 +28,11 @@ export const createImagesTable = () => {
 export const getImages = async () => {
   const text = 'SELECT * FROM images';
 
-  createNewConnection();
+  const conn = await createNewConnection();
 
   return new Promise((resolve, reject) => {
-    db.query(text, (err, res, _) => {
-      releaseConnection();
+    conn.query(text, (err, res, _) => {
+      releaseConnection(conn);
 
       if (err) reject(err);
       else resolve(res);
@@ -48,11 +45,11 @@ export const getImageById = async (id) => {
   const text = 'SELECT * FROM images WHERE id = ?';
   const values = [id];
 
-  createNewConnection();
+  const conn = await createNewConnection();
 
   return new Promise((resolve, reject) => {
-    db.query(text, values, (err, res, _) => {
-      releaseConnection();
+    conn.query(text, values, (err, res, _) => {
+      releaseConnection(conn);
 
       if (err) reject(err);
       else resolve(res[0]);
@@ -64,11 +61,11 @@ export const getImagesByUserID = async (userID) => {
   const text = 'SELECT * FROM images WHERE author = ?';
   const values = [userID];
 
-  createNewConnection();
+  const conn = await createNewConnection();
 
   return new Promise((resolve, reject) => {
-    db.query(text, values, (err, res, _) => {
-      releaseConnection();
+    conn.query(text, values, (err, res, _) => {
+      releaseConnection(conn);
 
       if (err) reject(err);
       else resolve(res);
@@ -81,10 +78,10 @@ export const insertImage = async (data) => {
   const text = 'INSERT INTO images(author, image_url) VALUES(?, ?)';
   const values = [data.author, data.imageURL];
 
-  createNewConnection();
+  const conn = await createNewConnection();
 
   return new Promise((resolve, reject) => {
-    db.query(text, values, async (err, res, _) => {
+    conn.query(text, values, async (err, res, _) => {
       if (err) reject(err);
       else {
         try {
@@ -93,7 +90,7 @@ export const insertImage = async (data) => {
         } catch (err) {
           reject(err);
         } finally {
-          releaseConnection();
+          releaseConnection(conn);
         }
       }
     });
@@ -104,10 +101,10 @@ export const updateImageDescription = async (data) => {
   const text = 'UPDATE images SET description = ? WHERE id = ?';
   const values = [data.description, data.id];
 
-  createNewConnection();
+  const conn = await createNewConnection();
 
   return new Promise((resolve, reject) => {
-    db.query(text, values, async (err, _, __) => {
+    conn.query(text, values, async (err, _, __) => {
       if (err) reject(err);
       else {
         try {
@@ -116,7 +113,7 @@ export const updateImageDescription = async (data) => {
         } catch (err) {
           reject(err);
         } finally {
-          releaseConnection();
+          releaseConnection(conn);
         }
       }
     });
@@ -128,11 +125,11 @@ export const deleteImageById = async (id) => {
   const text = 'DELETE FROM images WHERE id = ?';
   const values = [id];
 
-  createNewConnection();
+  const conn = await createNewConnection();
 
   return new Promise((resolve, reject) => {
-    db.query(text, values, (err, _, __) => {
-      releaseConnection();
+    conn.query(text, values, (err, _, __) => {
+      releaseConnection(conn);
 
       if (err) reject(err);
       else resolve({});
