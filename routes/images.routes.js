@@ -4,6 +4,7 @@ import {
   deleteImage,
   getImageById,
   getImages,
+  getUploads,
   uploadImage,
 } from '../controllers/images.controller.js';
 import validateJwt from '../middleware/validateJwt.js';
@@ -16,6 +17,9 @@ const router = express.Router();
 
 // get all images from database
 router.get('/images', getImages);
+
+// get user uploads
+router.get('/uploads', validateJwt, getUploads);
 
 // get single image
 router.get('/images/:id', getImageById);

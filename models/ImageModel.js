@@ -44,6 +44,18 @@ export const getImageById = async (id) => {
   });
 };
 
+export const getImagesByUserID = async (userID) => {
+  const text = 'SELECT * FROM images WHERE author = ?';
+  const values = [userID];
+
+  return new Promise((resolve, reject) => {
+    db.query(text, values, (err, res, _) => {
+      if (err) reject(err);
+      else resolve(res[0]);
+    });
+  });
+};
+
 // insert image into database
 export const insertImage = async (data) => {
   const text = 'INSERT INTO images(author, image_url) VALUES(?, ?)';

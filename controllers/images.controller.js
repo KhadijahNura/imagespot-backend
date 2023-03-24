@@ -3,6 +3,7 @@ import {
   deleteImageById as deleteImageFromDB,
   getImageById as getImageFromDB,
   getImages as getImagesFromDB,
+  getImagesByUserID,
   insertImage as insertImageIntoDB,
   updateImageDescription,
 } from '../models/ImageModel.js';
@@ -26,6 +27,22 @@ export const getImages = async (_, res) => {
     }
 
     res.json(images);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+// get all user uploads
+export const getUploads = async (_, res) => {
+  try {
+    const uploads = await getImagesByUserID(req.user.id);
+
+    // inserting user data into images
+    for (let i = 0; i < uploads.length; i++) {
+      await insertUserData(uploads[i]);
+    }
+
+    res.json(uploads);
   } catch (err) {
     res.status(500).json(err);
   }
