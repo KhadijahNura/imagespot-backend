@@ -14,11 +14,15 @@ export default async (req, res, next) => {
     const tokenData = verifyJwt(token);
     const [err, user] = await getUserDetails(tokenData.id);
 
-    if (err) return res.status(500).json({ message: 'Internal Server Error' });
+    if (err) {
+      console.log('Error fetching user details', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
     if (!user)
       return res
         .status(401)
-        .json({ message: 'Invalid or malfunctioned token provide' });
+        .json({ message: 'Invalid or malfunctioned token provided' });
 
     req.user = user;
     next();

@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 // import functions from image model
 import {
   deleteImageById as deleteImageFromDB,
@@ -111,6 +113,8 @@ export const deleteImage = async (req, res) => {
     const image = await getImageFromDB(id);
     if (!image) return res.status(404).json({ error: 'Image not found' });
     await deleteImageFromDB(id);
+
+    fs.unlinkSync(image.image_url);
 
     res.status(204).send();
   } catch (err) {
