@@ -10,6 +10,9 @@ export const createUsersTable = async () => {
   CREATE TABLE IF NOT EXISTS users (
     id int NOT NULL AUTO_INCREMENT,
     username varchar(30) UNIQUE NOT NULL,
+    email varchar(30) UNIQUE NOT NULL,
+    first_name varchar(10) NOT NULL,
+    last_name varchar(10) NOT NULL,
     password varchar(500) NOT NULL,
 
     PRIMARY KEY (id)
@@ -71,10 +74,34 @@ export const getUserByUsername = async (username) => {
   });
 };
 
+// get single user by Username
+export const getUserByEmail = async (email) => {
+  const text = 'SELECT * FROM users WHERE email = ?';
+  const values = [email];
+
+  const conn = await createNewConnection();
+
+  return new Promise((resolve, reject) => {
+    conn.query(text, values, (err, res, _) => {
+      releaseConnection(conn);
+
+      if (err) reject(err);
+      else resolve(res[0]);
+    });
+  });
+};
+
 // insert user into database
 export const insertUser = async (data) => {
-  const text = 'INSERT INTO users(username, password) VALUES(?, ?)';
-  const values = [data.username, data.password];
+  const text =
+    'INSERT INTO users(username, email, first_name, last_name, password) VALUES(?, ?, ?, ?, ?)';
+  const values = [
+    data.username,
+    data.email,
+    data.first_name,
+    data.last_name,
+    data.password,
+  ];
 
   const conn = await createNewConnection();
 
